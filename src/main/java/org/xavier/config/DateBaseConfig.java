@@ -1,18 +1,14 @@
 package org.xavier.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
-import com.baomidou.mybatisplus.extension.MybatisMapWrapperFactory;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
-import org.apache.ibatis.type.JdbcType;
-import org.xavier.config.properties.DateBaseProperties;
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandlerRegistry;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +17,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.xavier.config.properties.DateBaseProperties;
+
+import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * 描述信息：<br/>
@@ -42,8 +42,15 @@ public class DateBaseConfig {
     private final static Logger logger = LoggerFactory.getLogger(DateBaseConfig.class);
 
     @Bean(name = "mySQLDataSource")
-    public DruidDataSource mySQLDataSource() {
+    public DruidDataSource mySQLDataSource() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
+        // 配置监控 Filter
+        dataSource.setFilters("stat,wall");
+        Properties properties = new Properties();
+        properties.setProperty("druid.stat.mergeSql", "true");
+        properties.setProperty("druid.stat.slowSqlMillis", "500");
+        dataSource.setConnectProperties(properties);
+
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://" + dbProperties.getHost() + "/" + dbProperties.getDbName() + "?serverTimezone=UTC&useSSL=false&allowMultiQueries=true");
         dataSource.setUsername(dbProperties.getAc());
@@ -55,7 +62,7 @@ public class DateBaseConfig {
     }
 
     @Bean(name = "mySQLSessionFactory")
-    public SqlSessionFactory mySQLSessionFactory(DruidDataSource mySQLDataSource) throws Exception {
+    public SqlSessionFactory mySQLSessionFactory(DruidDataSource mySQLDataSource) {
         // 这个才能使 Mybatis-plus 生效(否则无法映射数据库操作方法)
         MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
         mybatisSqlSessionFactoryBean.setDataSource(mySQLDataSource);
@@ -70,7 +77,7 @@ public class DateBaseConfig {
             MybatisConfiguration configuration = new MybatisConfiguration();
             configuration.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
             configuration.setJdbcTypeForNull(JdbcType.NULL);
-            //开启下划线转驼峰(即 PO 和数据表都不带下划线)
+            //不开启下划线转驼峰(即 PO 和数据表都不带下划线)
             configuration.setMapUnderscoreToCamelCase(false);
             TypeHandlerRegistry registry = configuration.getTypeHandlerRegistry();
             mybatisSqlSessionFactoryBean.setConfiguration(configuration);

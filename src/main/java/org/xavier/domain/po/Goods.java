@@ -13,15 +13,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
  * @since Jdk 1.8
  */
 public class Goods {
+    /**
+     * 主键自增列
+     */
     @TableId(value = "goodsId", type = IdType.AUTO)
     private Integer goodsId;
-//    @TableField(value = "goodsName")
     private String goodsName;
-//    @TableField(value = "stock")
     private Integer stock;
-//    @TableField(value = "currentStock")
     private Integer currentStock;
-//    @TableField(value = "ts")
     private Long ts;
 
     public Integer getGoodsId() {
