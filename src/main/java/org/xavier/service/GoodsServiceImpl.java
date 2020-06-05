@@ -16,5 +16,4 @@ import org.springframework.stereotype.Service;
 public class GoodsServiceImpl {
     @Autowired
     private GoodsMapper goodsMapper;
-
 }

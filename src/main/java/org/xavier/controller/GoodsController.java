@@ -1,12 +1,11 @@
 package org.xavier.controller;
 
-import org.xavier.dao.GoodsMapper;
-import org.xavier.domain.po.Goods;
-import org.xavier.service.GoodsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.xavier.dao.GoodsMapper;
+import org.xavier.domain.po.Goods;
 
 /**
  * 描述信息：<br/>
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class GoodsController {
-    @Autowired
-    private GoodsServiceImpl goodsService;
     @Autowired
     private GoodsMapper goodsMapper;
 
