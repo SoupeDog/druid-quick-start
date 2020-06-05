@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.xavier.dao.GoodsMapper;
-import org.xavier.domain.po.Goods;
+import org.xavier.service.GoodsServiceImpl;
+
+import java.util.ArrayList;
 
 /**
  * 描述信息：<br/>
@@ -19,15 +21,18 @@ import org.xavier.domain.po.Goods;
 public class GoodsController {
     @Autowired
     private GoodsMapper goodsMapper;
+    @Autowired
+    private GoodsServiceImpl goodsService;
 
     @GetMapping(value = "/goods/{goodsId}")
     public Object queryArticleSummary(@PathVariable("goodsId") String goodsId) {
         return goodsMapper.selectById(goodsId);
     }
 
-    @GetMapping(value = "/goods/reduce/{goodsId}")
-    public Object reduceStuck(@PathVariable("goodsId") Integer goodsId) {
-        Goods currentGoods = goodsMapper.selectById(goodsId);
-        return goodsMapper.reduceStockById(goodsId, currentGoods.getCurrentStock());
+    @GetMapping(value = "/goods/reduce/{goodsIdList}")
+    public Object reduceStuck(@PathVariable("goodsIdList") ArrayList<Integer> goodsIdList)  {
+        return goodsService.mockTransactionRollback(goodsIdList.get(0), goodsIdList.get(1));
     }
+
+
 }
