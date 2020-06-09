@@ -13,6 +13,7 @@ public class StringInfo {
     private String defaultChar;
     private String variableLengthChar;
     private Sex sex;
+    private String mySet;
     private byte[] file;
 
     public Integer getId() {
@@ -45,6 +46,14 @@ public class StringInfo {
 
     public void setSex(Sex sex) {
         this.sex = sex;
+    }
+
+    public String getMySet() {
+        return mySet;
+    }
+
+    public void setMySet(String mySet) {
+        this.mySet = mySet;
     }
 
     public byte[] getFile() {
