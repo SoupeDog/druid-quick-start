@@ -24,4 +24,12 @@ public class DateInfoController {
         DateInfo dateInfo = dateInfoMapper.selectOne(queryWrapper);
         return dateInfo;
     }
+
+    @DeleteMapping(value = "/dateInfo/{id}")
+    public Object deleteDateInfoById(@PathVariable("id") Integer id) {
+        QueryWrapper<DateInfo> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("id", id);
+        int affectRow = dateInfoMapper.delete(queryWrapper);
+        return affectRow;
+    }
 }
