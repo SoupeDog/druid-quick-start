@@ -19,6 +19,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.xavier.config.properties.DateBaseProperties;
 
+import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -43,12 +44,11 @@ public class DateBaseConfig {
     private final static Logger logger = LoggerFactory.getLogger(DateBaseConfig.class);
 
     @Bean(name = "mySQLDataSource")
-    public DruidDataSource mySQLDataSource() throws SQLException {
+    public DataSource mySQLDataSource() throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         // 配置监控 Filter
-        dataSource.setFilters("stat,wall");
+        dataSource.setFilters("stat");
         Properties properties = new Properties();
-        properties.setProperty("druid.stat.mergeSql", "true");
         properties.setProperty("druid.stat.slowSqlMillis", "500");
         dataSource.setConnectProperties(properties);
 
@@ -59,8 +59,6 @@ public class DateBaseConfig {
         dataSource.setMaxActive(10);
         dataSource.setMinIdle(2);
         dataSource.setMaxWait(5000);
-
-
         return dataSource;
     }
 
@@ -80,7 +78,7 @@ public class DateBaseConfig {
 //    }
 
     @Bean(name = "mySQLSessionFactory")
-    public SqlSessionFactory mySQLSessionFactory(DruidDataSource mySQLDataSource) {
+    public SqlSessionFactory mySQLSessionFactory(DataSource mySQLDataSource) {
         // 这个才能使 Mybatis-plus 生效(否则无法映射数据库操作方法)
         MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
         mybatisSqlSessionFactoryBean.setDataSource(mySQLDataSource);
